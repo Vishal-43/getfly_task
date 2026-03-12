@@ -14,7 +14,12 @@ ALGORITHM = os.getenv("ALGORITHM", "HS256")
 EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", 30))
 
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+pwd_context = CryptContext(
+    schemes=["pbkdf2_sha256"],
+    deprecated="auto",
+    pbkdf2_sha256__default_rounds=int(os.getenv("ROUNDS", 29000)),
+    pbkdf2_sha256__default_salt_size=int(os.getenv("SALT_SIZE", 16)),
+)
 bearer_scheme = HTTPBearer()
 
 def hash_password(password: str) -> str:
