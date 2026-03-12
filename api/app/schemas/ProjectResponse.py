@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 from datetime import date, datetime
 from typing import Optional
-from app.models.PROJECTS import StatusEnum
+from ..models.PROJECTS import StatusEnum
 
 class ProjectResponse(BaseModel):
     id: int
