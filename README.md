@@ -7,6 +7,7 @@ A professional-grade, FastAPI-powered backend for comprehensive construction pro
 - [Overview](#overview)
 - [Features](#features)
 - [Technology Stack](#technology-stack)
+- [Quick Start Guide](#quick-start-guide)
 - [Project Structure](#project-structure)
 - [Prerequisites](#prerequisites)
 - [Installation Guide](#installation-guide)
@@ -20,6 +21,52 @@ A professional-grade, FastAPI-powered backend for comprehensive construction pro
 - [Using docs.json with Postman](#using-docsjson-with-postman)
 - [Troubleshooting](#troubleshooting)
 - [Contributing](#contributing)
+
+---
+
+## Quick Start Guide
+
+Get up and running with the Construction API in 5 minutes:
+
+### 1. Clone and Setup
+```bash
+git clone https://github.com/your-organization/construction-api.git
+cd construction-api
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+### 2. Configure Database
+```bash
+# Create MySQL database
+mysql -u root -p -e "CREATE DATABASE construction_api;"
+
+# Copy and update .env
+cp .env.example .env
+# Edit .env with your MySQL credentials
+
+# Run database schema
+mysql -u your_user -p construction_api < database.sql
+```
+
+### 3. Start Server
+```bash
+cd api
+uvicorn app.main:app --reload
+```
+
+Access the API at: **http://localhost:8000/docs**
+
+### 4. Test with Default Admin
+```bash
+# Login
+curl -X POST http://localhost:8000/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"admin@example.com","password":"admin123"}'
+
+# Use the token from response for authenticated requests
+```
 
 ---
 
