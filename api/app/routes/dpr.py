@@ -8,7 +8,7 @@ from ..models.PROJECTS import Project
 from ..models.USER import User
 from ..schemas.DPRCreate import DPRCreate
 from ..schemas.DPRRespoinse import DPRResponse
-from ..auth import get_current_user
+from ..auth import get_current_user, require_role
 
 router = APIRouter(prefix="/projects", tags=["DPR"])
 
@@ -17,7 +17,7 @@ def create_dpr(
     id: int,
     data: DPRCreate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(require_role("admin", "manager", "worker"))
 ):
     if not db.query(Project).filter(Project.id == id).first():
         raise HTTPException(status_code=404, detail="Project not found")

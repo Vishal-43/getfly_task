@@ -4,24 +4,39 @@ from typing import Optional, List
 from ..database import get_db
 from ..models.PROJECTS import Project
 from ..models.USER import User
-from ..schemas.ProjefctCreate import ProjectCreate
+from ..schemas.ProjectCreate import ProjectCreate
 from ..schemas.ProjectUpdate import ProjectUpdate
 from ..schemas.ProjectResponse import ProjectResponse
 from ..auth import get_current_user, require_role
 
 router = APIRouter(prefix="/projects", tags=["Projects"])
 
-@router.post("", status_code=201)
+@router.post("", response_model=ProjectResponse, status_code=201)
 def create_project(
-    data: ProjectCreate,
+    project_data: ProjectCreate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_role("admin", "manager"))
+    current_user: User = Depends(require_role("admin", "manager")),
 ):
-    project = Project(**data.model_dump(), created_by=current_user.id)
-    db.add(project)
+    """
+    Creates a new project.
+
+    - **name**: The name of the project (required).
+    - **description**: A description of the project.
+    - **start_date**: The start date of the project.
+    - **end_date**: The end date of the project.
+    - **status**: The current status of the project (e.g., planned, active, completed).
+    """
+    
+    new_project = Project(
+        **project_data.model_dump(),
+        created_by=current_user.id
+    )
+    
+    db.add(new_project)
     db.commit()
-    db.refresh(project)
-    return {"projectId": project.id, "message": "Project created"}
+    db.refresh(new_project)
+    
+    return new_project
 
 @router.get("", response_model=List[ProjectResponse])
 def list_projects(

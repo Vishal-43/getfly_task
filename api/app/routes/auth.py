@@ -31,5 +31,7 @@ def login(data: LoginRequest, db: Session = Depends(get_db)):
     if not user or not verify_password(data.password, user.password_hash):
         raise HTTPException(status_code=401, detail="Invalid credentials")
     
-    token = create_access_token({"sub": user.id, "role": user.role})
-    return {"access_token": token, "user_id": user.id, "role": user.role}
+    # Ensure role is serialized as string for JWT and response
+    role_str = user.role.value if hasattr(user.role, 'value') else str(user.role)
+    token = create_access_token({"sub": str(user.id), "role": role_str})
+    return {"access_token": token, "user_id": user.id, "role": role_str}

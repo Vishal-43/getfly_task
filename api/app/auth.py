@@ -38,7 +38,7 @@ def get_current_user( credentials: HTTPAuthorizationCredentials = Depends(bearer
     token = credentials.credentials
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        user_id: int = payload.get("sub")
+        user_id = payload.get("sub")
         if user_id is None:
             raise HTTPException(status_code=401, detail="Invalid token")
     except JWTError:
@@ -52,7 +52,8 @@ def get_current_user( credentials: HTTPAuthorizationCredentials = Depends(bearer
 
 def require_role(*roles):
     def checker(current_user: User = Depends(get_current_user)):
-        if current_user.role not in roles:
+        user_role_str = current_user.role.value if hasattr(current_user.role, 'value') else str(current_user.role)
+        if user_role_str not in roles:
             raise HTTPException(status_code=403, detail="Insufficient permissions")
         return current_user
     return checker
