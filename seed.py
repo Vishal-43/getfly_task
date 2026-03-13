@@ -1,18 +1,20 @@
-import asyncio
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from dotenv import load_dotenv
 import sys
 import os
 
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+load_dotenv()
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '.')))
 
 from api.app.models import User, RoleEnum
 from api.app.database import Base
 from api.app.auth import hash_password
 
-DATABASE_URL = "sqlite:///./test.db"
+DB_URL = f"mysql+pymysql://{os.getenv('DB_USER')}:{os.getenv('DB_PASSWORD')}@{os.getenv('DB_HOST')}:{os.getenv('DB_PORT')}/{os.getenv('DB_NAME')}"
 
-engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
+engine = create_engine(DB_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 def seed_admin():
@@ -40,7 +42,7 @@ def seed_admin():
 
 if __name__ == "__main__":
     print("Seeding database...")
-    # Create tables if they don't exist
+   
     Base.metadata.create_all(bind=engine)
     seed_admin()
     print("Database seeding complete.")
