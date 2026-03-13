@@ -17,15 +17,7 @@ def create_project(
     db: Session = Depends(get_db),
     current_user: User = Depends(require_role("admin", "manager")),
 ):
-    """
-    Creates a new project.
-
-    - **name**: The name of the project (required).
-    - **description**: A description of the project.
-    - **start_date**: The start date of the project.
-    - **end_date**: The end date of the project.
-    - **status**: The current status of the project (e.g., planned, active, completed).
-    """
+    
     
     new_project = Project(
         **project_data.model_dump(),
